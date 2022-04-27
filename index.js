@@ -140,17 +140,17 @@ function appendFileName(fileName, trailer) {
   return `${name}${trailer}${ext}`;
 }
 
-async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion, binaryLocation = defaultBinaryLocation, directoryName = __dirname, includePlatforms = [] } = {}) {
-  const allPlatforms = [].concat(defaultPlatforms, includePlatforms);
+async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion, binaryLocation = defaultBinaryLocation, binaryDirname = __dirname, binaryPlatforms = [] } = {}) {
+  const allPlatforms = [].concat(defaultPlatforms, binaryPlatforms);
   const platforms = uniqByKeepLast(allPlatforms, p => `${p.platform}-${p.arch}`)
   const found = platforms.find(p => p.platform === platform && p.arch === arch);
   if (!found) throw new Error(`${platform} on ${arch} not supported`);
-  const binDir = path.join(directoryName, 'binaries');
+  const binDir = path.join(binaryDirname, 'binaries');
   await mkdirp(binDir);
   const binFileName = appendFileName(found.bin, `-${binaryVersion}`);
   const binPath = path.join(binDir, binFileName);
   if (!(await fileExists(binPath))) {
-    const pkgDir = path.join(directoryName, 'pkg');
+    const pkgDir = path.join(binaryDirname, 'pkg');
     await mkdirp(pkgDir);
     const pkgFileName = appendFileName(found.pkg, `-${binaryVersion}`);
     const pkgPath = path.join(pkgDir, pkgFileName);
@@ -229,11 +229,11 @@ async function exec(options = {}) {
     cancel = () => false,
     binaryVersion,
     binaryLocation,
-    directoryName,
-    includePlatforms,
+    binaryDirname,
+    binaryPlatforms,
     verbosity = 0
   } = options;
-  const binary = options.binary || await ensureBinary({ binaryVersion, binaryLocation, directoryName, includePlatforms });
+  const binary = options.binary || await ensureBinary({ binaryVersion, binaryLocation, binaryDirname, binaryPlatforms });
   const args = ['-f', 'json', '-P', '8'];
   for (let i = 0; i < verbosity; i++) {
     args.push('-v');

@@ -58,6 +58,9 @@ The options include:
   - **`progress`**: _`function`_ Function to handle progress events
   - **`binary`**: _`string`_ Binary executable path of the Ookla speedtest CLI
   - **`binaryVersion`**: _`string`_ *Default `'1.0.0'`* Binary executable version
+  - **`binaryLocation`**: _`string`_ *Default `'https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p'`* Binary executable location
+  - **`binaryDirname`**: _`string`_ *Default `__dirname`* Binary executable directory name
+  - **`binaryPlatforms`**: _`array`_ *Default `[]`* Binary executable platforms
   - **`host`**: _`string`_ Server host to connect to
   - **`verbosity`**: _`number`_ Log level for `{ type: log }` progress events
   - **`acceptLicense`**: _`boolean`_ Set to `true` to accept the Ookla EULA, TOS and Privacy policy. This must be done (at least) once on the system. If you have not accepted the Ookla license terms, you can view the links to their agreements by running the speedtest-net CLI without the `--accept-license` option.
