@@ -1,5 +1,5 @@
 {
-  "name": "speedtest-net",
+  "name": "@jackhuynh1995/speedtest-net",
   "description": "Speedtest.net client",
   "author": "Han de Boer",
   "version": "2.2.0",
