@@ -54,9 +54,18 @@ function chMod(file, mode) {
   }));
 }
 
-const defaultBinaryVersion = '1.0.0';
+function uniqByKeepLast(array, key) {
+  return [
+      ...new Map(
+        array.map(x => [key(x), x])
+      ).values()
+  ]
+}
 
-const platforms = [
+const defaultBinaryVersion = '1.0.0';
+const defaultBinaryLocation = 'https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p';
+
+const defaultPlatforms = [
   {
     platform: 'darwin',
     arch: 'x64',
@@ -131,8 +140,9 @@ function appendFileName(fileName, trailer) {
   return `${name}${trailer}${ext}`;
 }
 
-async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion, directoryName = __dirname } = {}) {
-  const binaryLocation = 'https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p';
+async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion, binaryLocation = defaultBinaryLocation, directoryName = __dirname, includePlatforms = [] } = {}) {
+  const allPlatforms = [].concat(defaultPlatforms, includePlatforms);
+  const platforms = uniqByKeepLast(allPlatforms, p => `${p.platform}-${p.arch}`)
   const found = platforms.find(p => p.platform === platform && p.arch === arch);
   if (!found) throw new Error(`${platform} on ${arch} not supported`);
   const binDir = path.join(directoryName, 'binaries');
@@ -218,10 +228,12 @@ async function exec(options = {}) {
     host,
     cancel = () => false,
     binaryVersion,
+    binaryLocation,
     directoryName,
+    includePlatforms,
     verbosity = 0
   } = options;
-  const binary = options.binary || await ensureBinary({ binaryVersion, directoryName });
+  const binary = options.binary || await ensureBinary({ binaryVersion, binaryLocation, directoryName, includePlatforms });
   const args = ['-f', 'json', '-P', '8'];
   for (let i = 0; i < verbosity; i++) {
     args.push('-v');
