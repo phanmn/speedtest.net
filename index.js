@@ -131,16 +131,16 @@ function appendFileName(fileName, trailer) {
   return `${name}${trailer}${ext}`;
 }
 
-async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion } = {}) {
+async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion, directoryName = __dirname } = {}) {
   const binaryLocation = 'https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p';
   const found = platforms.find(p => p.platform === platform && p.arch === arch);
   if (!found) throw new Error(`${platform} on ${arch} not supported`);
-  const binDir = path.join(__dirname, 'binaries');
+  const binDir = path.join(directoryName, 'binaries');
   await mkdirp(binDir);
   const binFileName = appendFileName(found.bin, `-${binaryVersion}`);
   const binPath = path.join(binDir, binFileName);
   if (!(await fileExists(binPath))) {
-    const pkgDir = path.join(__dirname, 'pkg');
+    const pkgDir = path.join(directoryName, 'pkg');
     await mkdirp(pkgDir);
     const pkgFileName = appendFileName(found.pkg, `-${binaryVersion}`);
     const pkgPath = path.join(pkgDir, pkgFileName);
@@ -218,9 +218,10 @@ async function exec(options = {}) {
     host,
     cancel = () => false,
     binaryVersion,
+    directoryName,
     verbosity = 0
   } = options;
-  const binary = options.binary || await ensureBinary({ binaryVersion });
+  const binary = options.binary || await ensureBinary({ binaryVersion, directoryName });
   const args = ['-f', 'json', '-P', '8'];
   for (let i = 0; i < verbosity; i++) {
     args.push('-v');
