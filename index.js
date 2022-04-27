@@ -142,8 +142,8 @@ function appendFileName(fileName, trailer) {
 
 async function ensureBinary({ platform = process.platform, arch = process.arch, binaryVersion = defaultBinaryVersion, binaryLocation = defaultBinaryLocation, binaryDirname = __dirname, binaryPlatforms = [] } = {}) {
   const allPlatforms = [].concat(defaultPlatforms, binaryPlatforms);
-  const platforms = uniqByKeepLast(allPlatforms, p => `${p.platform}-${p.arch}`)
-  const found = platforms.find(p => p.platform === platform && p.arch === arch);
+  const platforms = uniqByKeepLast(allPlatforms, p => p.platform)
+  const found = platforms.find(p => p.platform === platform);
   if (!found) throw new Error(`${platform} on ${arch} not supported`);
   const binDir = path.join(binaryDirname, 'binaries');
   await mkdirp(binDir);
