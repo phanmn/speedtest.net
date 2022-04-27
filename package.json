@@ -2,7 +2,7 @@
   "name": "@jackhuynh1995/speedtest-net",
   "description": "Speedtest.net client",
   "author": "Han de Boer",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "bin": "bin/index.js",
   "main": "index.js",
   "repository": {
