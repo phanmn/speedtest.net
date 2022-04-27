@@ -121,8 +121,10 @@ console.log();
 
 updateLines();
 
-const binaryLocation = "https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p";
-const includePlatforms = [
+const binaryLocation =
+  "https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p";
+const binaryDirname = undefined;
+const binaryPlatforms = [
   // MacOS
   {
     platform: "darwin",
@@ -140,7 +142,7 @@ const includePlatforms = [
     sha: "64054a021dd7d49e618799a35ddbc618dcfc7b3990e28e513a420741717ac1ad",
   },
 ];
-const options = { includePlatforms, binaryLocation };
+const options = { binaryLocation, binaryDirname, binaryPlatforms };
 
 let paramError = null;
 for (let i = 2; i < process.argv.length; i++) {
