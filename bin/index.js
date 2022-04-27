@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-'use strict';
-require('draftlog').into(console).addLineListener(process.stdin);
-const chalk = require('chalk');
-const speedTest = require('../');
+"use strict";
+require("draftlog").into(console).addLineListener(process.stdin);
+const chalk = require("chalk");
+const speedTest = require("../");
 
 let header;
 let speeds;
-let step = 'Ping';
+let step = "Ping";
 const statuses = {
   Ping: true,
   Download: false,
@@ -19,12 +19,12 @@ function updateLines() {
   const headerTxt = renderHeader(statuses, step);
   const speedsTxt = renderStatus(statuses, step, spinner);
 
-  header('│' + headerTxt + '│');
-  speeds('│' + speedsTxt + '│');
+  header("│" + headerTxt + "│");
+  speeds("│" + speedsTxt + "│");
 }
 
 function renderHeader(statuses) {
-  let txt = '';
+  let txt = "";
 
   for (const k of Object.keys(statuses)) {
     const status = statuses[k];
@@ -42,17 +42,17 @@ function renderHeader(statuses) {
 }
 
 function renderStatus(statuses, step, spinner) {
-  let txt = '';
+  let txt = "";
   for (const k of Object.keys(statuses)) {
     let status = statuses[k];
-    status = String(status === Boolean(status) ? '' : status);
+    status = String(status === Boolean(status) ? "" : status);
 
     if (!status) {
-      status = spinner + ' ';
+      status = spinner + " ";
     }
 
     status = centerText(status, width);
-    status = status.replace(/([KMGT]bps|ms)/gi, chalk.dim('$1'));
+    status = status.replace(/([KMGT]bps|ms)/gi, chalk.dim("$1"));
     if (step === k) {
       status = chalk.yellow(status);
     } else {
@@ -70,14 +70,14 @@ function centerText(text, n, length) {
 
   // Pad to be even
   if (n % 2 === 1) {
-    text = ' ' + text;
+    text = " " + text;
   }
 
   // Round n to lowest number
   n = Math.floor(n / 2);
 
   // Make spacer
-  const spacer = ' '.repeat(n);
+  const spacer = " ".repeat(n);
 
   // Fill in text
   return spacer + text + spacer;
@@ -85,7 +85,7 @@ function centerText(text, n, length) {
 
 function speedText(speed) {
   let bits = speed * 8;
-  const units = ['', 'K', 'M', 'G', 'T'];
+  const units = ["", "K", "M", "G", "T"];
   const places = [0, 1, 2, 3, 3];
   let unit = 0;
   while (bits >= 2000 && unit < 4) {
@@ -95,14 +95,7 @@ function speedText(speed) {
   return `${bits.toFixed(places[unit])} ${units[unit]}bps`;
 }
 
-const frames = [
-  '+---',
-  '-+--',
-  '--+-',
-  '---+',
-  '--+-',
-  '-+--',
-];
+const frames = ["+---", "-+--", "--+-", "---+", "--+-", "-+--"];
 let lastChange = 0;
 function makeSpinner() {
   if (Date.now() > lastChange + 30) {
@@ -112,55 +105,84 @@ function makeSpinner() {
   return frames[0];
 }
 
-const empty = () => console.log('│' + ' '.repeat(width * 3) + '│');
+const empty = () => console.log("│" + " ".repeat(width * 3) + "│");
 console.log();
-console.log('┌' + '─'.repeat(width * 3) + '┐');
+console.log("┌" + "─".repeat(width * 3) + "┐");
 empty();
-console.draft('│' + ' '.repeat(width * 3) + '│');
+console.draft("│" + " ".repeat(width * 3) + "│");
 empty();
 header = console.draft();
 speeds = console.draft();
 empty();
 empty();
-console.log('└' + '─'.repeat(width * 3) + '┘');
+console.log("└" + "─".repeat(width * 3) + "┘");
 console.log();
 console.log();
 
 updateLines();
 
-const options = {};
+const binaryLocation = "https://install.speedtest.net/app/cli/ookla-speedtest-$v-$p";
+const includePlatforms = [
+  // MacOS
+  {
+    platform: "darwin",
+    arch: "x64",
+    pkg: "macosx.tgz",
+    bin: "macosx",
+    sha: "8d0af8a81e668fbf04b7676f173016976131877e9fbdcd0a396d4e6b70a5e8f4",
+  },
+  // Window
+  {
+    platform: "win32",
+    arch: "x64",
+    pkg: "win64.zip",
+    bin: "win-x64.exe",
+    sha: "64054a021dd7d49e618799a35ddbc618dcfc7b3990e28e513a420741717ac1ad",
+  },
+];
+const options = { includePlatforms, binaryLocation };
 
 let paramError = null;
 for (let i = 2; i < process.argv.length; i++) {
   const arg = process.argv[i];
   const next = process.argv[i + 1];
   if (i >= 2) {
-    if (arg === '--help' || arg === '-h') {
-      console.log(`Usage: ${process.argv[1]} [-h|--help] [--accept-license] [--accept-gdpr] [--server-id <id>] [--source-ip <ip>]`);
-      console.log('-h  --help            Help');
-      console.log('    --accept-license  Accept the Ookla EULA, TOS and Privacy policy. ');
-      console.log('    --accept-gdpr     Accepts the Ookla GDPR terms. ');
-      console.log('                      The terms only need to be accepted once.');
-      console.log('    --server-id <id>  Test using a specific server by Ookla server ID');
-      console.log('    --source-ip <ip>  Test a specific network interface identified by local IP');
+    if (arg === "--help" || arg === "-h") {
+      console.log(
+        `Usage: ${process.argv[1]} [-h|--help] [--accept-license] [--accept-gdpr] [--server-id <id>] [--source-ip <ip>]`
+      );
+      console.log("-h  --help            Help");
+      console.log(
+        "    --accept-license  Accept the Ookla EULA, TOS and Privacy policy. "
+      );
+      console.log("    --accept-gdpr     Accepts the Ookla GDPR terms. ");
+      console.log(
+        "                      The terms only need to be accepted once."
+      );
+      console.log(
+        "    --server-id <id>  Test using a specific server by Ookla server ID"
+      );
+      console.log(
+        "    --source-ip <ip>  Test a specific network interface identified by local IP"
+      );
       process.exit(0);
-    } else if (arg === '--accept-license') {
+    } else if (arg === "--accept-license") {
       options.acceptLicense = true;
-    } else if (arg === '--accept-gdpr') {
+    } else if (arg === "--accept-gdpr") {
       options.acceptGdpr = true;
-    } else if (arg === '--server-id') {
+    } else if (arg === "--server-id") {
       if (next !== undefined) {
         i++;
         options.serverId = next;
       } else {
-        paramError = 'Error: bad parameters';
+        paramError = "Error: bad parameters";
       }
-    } else if (arg === '--source-ip') {
+    } else if (arg === "--source-ip") {
       if (next !== undefined) {
         i++;
         options.sourceIp = next;
       } else {
-        paramError = 'Error: bad parameters';
+        paramError = "Error: bad parameters";
       }
     }
   }
@@ -177,31 +199,37 @@ if (paramError) {
     setInterval(updateLines, 100);
     await speedTest({
       ...options,
-      progress: event => {
+      progress: (event) => {
         const content = event[event.type] || {};
         switch (event.type) {
-          case 'ping':
-            step = 'Ping';
-            statuses.Ping = content.latency.toFixed(1) + ' ms';
+          case "ping":
+            step = "Ping";
+            statuses.Ping = content.latency.toFixed(1) + " ms";
             break;
-          case 'download':
+          case "download":
             statuses.Download = speedText(content.bandwidth);
-            step = 'Download';
+            step = "Download";
             break;
-          case 'upload':
+          case "upload":
             statuses.Upload = speedText(content.bandwidth);
-            step = 'Upload';
+            step = "Upload";
             break;
         }
-      }
+      },
     });
-    step = 'Finished';
+    step = "Finished";
     updateLines();
   } catch (err) {
     if (err.message.test(/acceptLicense/)) {
-      console.error(chalk.red(err.message.replace('acceptLicense: true', '--accept-license')));
+      console.error(
+        chalk.red(
+          err.message.replace("acceptLicense: true", "--accept-license")
+        )
+      );
     } else {
-      console.error(chalk.red(err.message.replace('acceptGdpr: true', '--accept-gdpr')));
+      console.error(
+        chalk.red(err.message.replace("acceptGdpr: true", "--accept-gdpr"))
+      );
     }
     process.exit(1);
   } finally {
