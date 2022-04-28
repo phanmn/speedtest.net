@@ -136,7 +136,7 @@ const setCancelHandler = Symbol();
 
 function appendFileName(fileName, trailer) {
   const ext = path.extname(fileName);
-  const name = fileName.slice(0, -ext.length);
+  const name = fileName.replace(ext, '');
   return `${name}${trailer}${ext}`;
 }
 
