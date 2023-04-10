@@ -40,7 +40,6 @@ const decompressTar = require('decompress-tar');
 const decompressTarbz2 = require('decompress-tarbz2');
 const decompressTargz = require('decompress-targz');
 const decompressUnzip = require('decompress-unzip');
-// const decompressTarXz = require('decompress-tarxz');
 const kill = require('tree-kill');
 
 function fileExists(file) {
